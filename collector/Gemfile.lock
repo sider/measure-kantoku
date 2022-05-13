@@ -3,6 +3,7 @@ GEM
   specs:
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
+    dotenv (2.7.6)
     elastic-transport (8.0.0)
       faraday (~> 1)
       multi_json
@@ -49,6 +50,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  dotenv (~> 2.7)
   elasticsearch (= 8.2.0)
   faraday (~> 1.10)
   octokit (~> 4.21)
