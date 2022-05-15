@@ -12,8 +12,9 @@ Dotenv.load
 ACCESS_TOKEN = ENV['GITHUB_ACCESS_TOKEN'].freeze
 TARGET_REPO_OWNER = ENV['GITHUB_TARGET_REPOSITORY_OWNER'].freeze
 TARGET_REPO_NAME = ENV['GITHUB_TARGET_REPOSITORY_NAME'].freeze
-MAX_ISSUE = ENV['GITHUB_MAX_ISSUE'].freeze
-ES_INDEX_NAME = 'sideci_1000'.freeze
+MAX_ISSUE = ENV['GITHUB_MAX_ISSUE'].to_i.freeze || 100.freeze
+ELASTIC_SEARCH_URL = ENV['ELASTIC_SEARCH_URL'].freeze || 'http://elasticsearch:9200'.freeze
+KIBANA_URL = ENV['KIBANA_URL'].freeze || 'http://kibana:5601'.freeze
 
 # utils
 def repository_reference
@@ -21,7 +22,7 @@ def repository_reference
 end
 
 def es_index_name
-  "issues_#{repository_reference}"
+  "issues_#{TARGET_REPO_OWNER}_#{TARGET_REPO_NAME}"
 end
 
 def github_client
@@ -29,11 +30,11 @@ def github_client
 end
 
 def es_client
-  @es_client ||= Elasticsearch::Client.new(url: 'http://localhost:9200')
+  @es_client ||= Elasticsearch::Client.new(url: ELASTIC_SEARCH_URL)
 end
 
 def kibana_client
-  @kibana_client ||= Faraday.new(url: 'http://localhost:5601/api/', headers: {'Content-Type' => 'application/json', 'kbn-xsrf' => 'true'})
+  @kibana_client ||= Faraday.new(url: "#{KIBANA_URL}/api/", headers: {'Content-Type' => 'application/json', 'kbn-xsrf' => 'true'})
 end
 
 # core logics
